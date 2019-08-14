@@ -18,8 +18,7 @@ def function1(filename, filename2):
     txtLst2 = f2.readlines()
     f2.close()
     txtLst2.pop(0) # remove the column names
-    for i in range(len(txtLst2)):
-        txtLst2[i] = txtLst2[i].strip().split('\n')
+    
 
     # convert num_of_articles to integer and count the remainders
     # for i in range(len(num_of_articles)):
@@ -44,15 +43,14 @@ def function1(filename, filename2):
         else:
             numLst.append(i[1])
     
+            
     # use csvData(list) to store all the values
     csvData = []
 
     for index in range(len(txtLst2)):
         for times in range(1, numLst[index]+1):
-            csvData.append([txtLst2[index], times])
+            csvData.append([txtLst2[index].strip('"'), times])
 
-
-    print(csvData[0:30])
     with open('FSurls.csv', 'w') as csvFile:
         writer = csv.writer(csvFile)
         writer.writerows(csvData)
