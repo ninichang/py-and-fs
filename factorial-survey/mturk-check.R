@@ -108,9 +108,8 @@ write.csv(data2, file = "checked-mturk.csv")
 
 
 
-# -------------------------------------------------------
 
-# managing the workers
+# manage the workers =====
 workers <- read.csv("workers.csv", stringsAsFactors = FALSE)
 
 
@@ -125,8 +124,12 @@ worker_data <- workers %>%
   select(c("Worker.ID", "UPDATE.BlockStatus", "BlockReason")) 
 
 colnames(worker_data) <- c("WorkerID", "UPDATE BlockStatus", "BlockReason")
-
-
 write.csv(worker_data, file = "workers.csv")
 
+# 1st trial for emails =====
 
+author1 <- paste(data2$Answer.first_name1, data2$Answer.last_name1)
+author2 <- paste(data2$Answer.first_name2, data2$Answer.last_name2)
+df <- data.frame(name = c(author1, author2), institution = c(data2$Answer.inst1, data2$Answer.inst2))
+
+write.csv(df, file = "emails-1990-1995.csv")
