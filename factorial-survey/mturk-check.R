@@ -130,6 +130,6 @@ write.csv(worker_data, file = "workers.csv")
 
 author1 <- paste(data2$Answer.first_name1, data2$Answer.last_name1)
 author2 <- paste(data2$Answer.first_name2, data2$Answer.last_name2)
-df <- data.frame(name = c(author1, author2), institution = c(data2$Answer.inst1, data2$Answer.inst2))
+df <- data.frame(name = c(author1, author2), institution = c(data2$Answer.inst1, data2$Answer.inst2), delete = rep("", 690))
 
-write.csv(df, file = "emails-1990-1995.csv")
+write.csv(df, file = "emails-1990-1995.csv", row.names = FALSE)
