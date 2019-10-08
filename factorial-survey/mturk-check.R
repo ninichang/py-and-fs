@@ -1,14 +1,9 @@
 # Factoroal survey mturk check funtion 
 
-# mturk how to approve and reject task : =====
+# Instruction : 
+# Follow the order of the code.
 
-# APPROVE ASSIGNMENT: Indicate which assignments to approve by putting an "x" under a column titled "Approve".
-# REJECT ASSIGNMENT: Indicate which assignments to reject by putting your reject feedback under a column titled "Reject".
-
-
-# NOTE : check if the input columns are indeed from 30-37 in the csv files
-
-# code =====
+# Check round 1 =====
 data <- read.csv("results.csv", stringsAsFactors = FALSE)
 range_inputs <- 30:37 #without reasons_cannot_find!!
 colnames(data[, 30:37])
@@ -137,7 +132,7 @@ worker_data <- workers %>%
 colnames(worker_data) <- c("WorkerID", "UPDATE BlockStatus", "BlockReason")
 write.csv(worker_data, file = "workers.csv")
 
-# CSV file that needs to be checked before collecting emails =====
+# CSV that needs to manual check b4 collecting emails =====
 data2 <- data[data$Reject == "", ]
 author1 <- paste(data2$Answer.first_name1, data2$Answer.last_name1)
 author2 <- paste(data2$Answer.first_name2, data2$Answer.last_name2)
