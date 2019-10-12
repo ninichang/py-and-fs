@@ -143,6 +143,8 @@ write.csv(df, file = "author_inst_1996-2000.csv", row.names = FALSE)
 
 
 # Manage CSV after author name and institution are ready
-data <- read.csv("chienn.csv")
-
-
+data <- read.csv("chienn-1990-1995.csv")
+data2 <- read.csv("chienn-1996-2000.csv")
+authors <- rbind(subset(data[,-3], data$delete != "x"), subset(data2[, -3], data2$delete != "x"))
+head(authors)
+write.csv(authors[1:800, ], file = "authors_and_emails.csv", row.names = FALSE)
