@@ -148,3 +148,25 @@ data2 <- read.csv("chienn-1996-2000.csv")
 authors <- rbind(subset(data[,-3], data$delete != "x"), subset(data2[, -3], data2$delete != "x"))
 head(authors)
 write.csv(authors[1:800, ], file = "authors_and_emails.csv", row.names = FALSE)
+
+
+
+# first batch of email collection
+emails <- read.csv("emails.csv")
+emails$Approve <- ""
+emails$Reject <- ""
+source <- grepl("http", emails$Answer.source)
+for(i in 1:nrow(emails)){
+  if(source[i]){
+    emails[i, "Approve"] <- "x"
+  } else {
+    emails[i, "Reject"] <- "x"
+  }
+}
+
+library(dbplyr)
+collected_emails <- emails %>%
+  filter(.$Approve == "x") %>%
+  select(Input.name, Input.institution, Answer.email, Answer.source)
+
+write.csv(collected_emails[-480, ], file = "colleced_emails.csv", row.names = FALSE)
