@@ -16,17 +16,14 @@ colnames(data[, 30:37])
 data[, "Reject"] = ""
 for(i in 1:nrow(data)){
   
-  # if any answer contains {}, reject
-  if(any(data[i, range_inputs] %in% c("{}", "{} {}"))){
-    data[i, "Reject"] = paste(data[i, "Reject"], "Weird character")
-  }
-  
   # if the answer was given within ___ seconds, reject the answer.
   if(data[i, "WorkTimeInSeconds"] < 70){
     data[i,"Reject"] = paste(data[i,"Reject"], "Too fast.")
   }
   
-  # Force them to write First Name as “Single” and Last Name as “Author” for those articles with only one author. Then reject everyone that has the same first name and last name for the two authors.
+  # Force them to write First Name as “Single” and Last Name as “Author” for 
+  # articles with only one author. 
+  # Reject everyone that has the same first name and last name for the two authors.
   
   if(data[i, "Answer.first_name1"] == data[i, "Answer.first_name2"] ||
      data[i, "Answer.last_name1"] == data[i, "Answer.last_name2"]){
@@ -34,7 +31,9 @@ for(i in 1:nrow(data)){
                               "Did not read instructions (Single Author). ")
   }
   
-  # Reject those with any missing data, except the last one. If the last response isnot missing, then do not reject them. We will look at them manually.
+  # Reject those with any missing data, except the last one. 
+  # If the last response isn't missing, do not reject them. 
+  # We will look at them manually.
   
   if(data[i, "Answer.reason_cannot_find"] == "{}" || 
      is.na(data[i, "Answer.reason_cannot_find"])){
@@ -46,13 +45,14 @@ for(i in 1:nrow(data)){
     
     # Select those with all capital letters in a response and look at them manually.
     if(all(unlist(sapply(data[i, range_inputs], 
-                         function(x) strsplit(x, ''))) %in% LETTERS)){
+                         function(x) {strsplit(x, "")})) %in% LETTERS)){
       data[i, "Reject"] = paste(data[i,"Reject"], 
                                 "CHECK: All capital inputs "  )
     }
     
     
-    # Select those with a lower-case first letter of any response and decide if we want to reject them.
+    # Select those with a lower-case first letter of any response 
+    # and decide if we want to reject them.
     if(any(substr(data[i, range_inputs], 1, 1) %in% letters)){
       data[i, "Reject"] = paste(data[i,"Reject"], "First letter not capitalized. ")
     }
@@ -115,6 +115,12 @@ num_task <- function(x){
 rate2 <- sum(data[, "Reject"] != '')/nrow(data)
 print(paste("New reject rate is:", rate2))
 
+# Check round 2 =====
+# check submitted response after rejecting them in the first round 
+data <- read.csv("results-round2.csv", stringsAsFactors = FALSE)
+data <- data[data$AssignmentStatus == "Submitted", ]
+# now run the function created in round 1 on this data
+
 
 # manage the workers =====
 workers <- read.csv("workers.csv", stringsAsFactors = FALSE)
@@ -132,17 +138,22 @@ worker_data <- workers %>%
 colnames(worker_data) <- c("WorkerID", "UPDATE BlockStatus", "BlockReason")
 write.csv(worker_data, file = "workers.csv")
 
-# CSV that needs to manual check b4 collecting emails =====
-data2 <- data[data$Reject == "", ]
-author1 <- paste(data2$Answer.first_name1, data2$Answer.last_name1)
-author2 <- paste(data2$Answer.first_name2, data2$Answer.last_name2)
+# CSV that needs manual check b4 collecting emails =====
+
+# important: need to check if author first name = single author
+data3 <- data[data$Reject == "", ]
+author1 <- paste(data3$Answer.first_name1, data3$Answer.last_name1)
+author2 <- paste(data3$Answer.first_name2, data3$Answer.last_name2)
 df <- data.frame(name = c(author1, author2), 
-                 institution = c(data2$Answer.inst1, data2$Answer.inst2),
-                 delete = rep("", length(author1)))
-write.csv(df, file = "author_inst_1996-2000.csv", row.names = FALSE)
+                 institution = c(data3$Answer.inst1, data3$Answer.inst2),
+                 delete = rep("", length(author1)), 
+                 stringsAsFactors = FALSE)
+
+df <- df %>% filter(.$name != "Single Author", .$name != "{}", .$institution !="{}")
+write.csv(df, file = "author_inst_2011-2015-2.csv", row.names = FALSE)
 
 
-# Manage CSV after author name and institution are ready
+# Manage CSV after author name and institution are ready =====
 data <- read.csv("chienn-1990-1995.csv")
 data2 <- read.csv("chienn-1996-2000.csv")
 authors <- rbind(subset(data[,-3], data$delete != "x"), subset(data2[, -3], data2$delete != "x"))
