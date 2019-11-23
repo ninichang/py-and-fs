@@ -154,11 +154,11 @@ write.csv(df, file = "author_inst_2011-2015-2.csv", row.names = FALSE)
 
 
 # Manage CSV after author name and institution are ready =====
-data <- read.csv("chienn-1990-1995.csv")
-data2 <- read.csv("chienn-1996-2000.csv")
+data <- read.csv("chienn1.csv")
+data2 <- read.csv("chienn2.csv")
 authors <- rbind(subset(data[,-3], data$delete != "x"), subset(data2[, -3], data2$delete != "x"))
 head(authors)
-write.csv(authors[1:800, ], file = "authors_and_emails.csv", row.names = FALSE)
+write.csv(authors, file = "authors_and_emails_task_mturk.csv", row.names = FALSE)
 
 
 
@@ -181,3 +181,11 @@ collected_emails <- emails %>%
   select(Input.name, Input.institution, Answer.email, Answer.source)
 
 write.csv(collected_emails[-480, ], file = "colleced_emails.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
