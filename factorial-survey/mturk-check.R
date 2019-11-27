@@ -162,27 +162,28 @@ write.csv(authors, file = "authors_and_emails_task_mturk.csv", row.names = FALSE
 
 
 
-# first batch of email collection
-emails <- read.csv("emails.csv")
-emails$Approve <- ""
-emails$Reject <- ""
+# manage email collection
+emails <- read.csv("results.csv")
+# filter out wrong email address source 
 source <- grepl("http", emails$Answer.source)
-for(i in 1:nrow(emails)){
-  if(source[i]){
-    emails[i, "Approve"] <- "x"
-  } else {
-    emails[i, "Reject"] <- "x"
-  }
-}
+# filter out wrong email address format
+correct_email_format <- grepl("@", emails$Answer.email)
 
-library(dbplyr)
+approve_index <- ifelse(source == TRUE & correct_email_format == TRUE, 
+                 TRUE, FALSE)
+emails$Approve <- ifelse(approve_index == TRUE, "x", "")
+emails$Reject <- ifelse(approve_index == FALSE, "x", "")
+
+# csv to upload to mturk
+write.csv(emails, file = "upload_to_mturk.csv", row.names = FALSE)
+
+# Collect name, institu., email, source
+library(dplyr)
 collected_emails <- emails %>%
   filter(.$Approve == "x") %>%
   select(Input.name, Input.institution, Answer.email, Answer.source)
 
-write.csv(collected_emails[-480, ], file = "colleced_emails.csv", row.names = FALSE)
-
-
+write.csv(rbind(original_email, collected_emails), file = "collected_emails.csv", row.names = FALSE)
 
 
 
