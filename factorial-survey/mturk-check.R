@@ -8,8 +8,8 @@ data <- read.csv("results.csv", stringsAsFactors = FALSE)
 range_inputs <- 30:37 #without reasons_cannot_find!!
 colnames(data[, 30:37])
 # should look like this:
-# [1] "Answer.article_title" "Answer.first_name1"   "Answer.first_name2"  
-# [4] "Answer.inst1"         "Answer.inst2"         "Answer.journal_name" 
+# [1] "Answer.article_title" "Answer.first_name1"   "Answer.first_name2" 
+# [4] "Answer.inst1"         "Answer.inst2"         "Answer.journal_name"
 # [7] "Answer.last_name1"    "Answer.last_name2"   
 
 
@@ -150,7 +150,7 @@ df <- data.frame(name = c(author1, author2),
                  stringsAsFactors = FALSE)
 
 df <- df %>% filter(.$name != "Single Author", .$name != "{}", .$institution !="{}")
-write.csv(df, file = "author_inst_2011-2015-2.csv", row.names = FALSE)
+write.csv(df, file = "author_inst_2016-2018-2.csv", row.names = FALSE)
 
 
 # Manage CSV after author name and institution are ready =====
