@@ -4,7 +4,7 @@
 # Follow the order of the code.
 
 # Check round 1 =====
-data <- read.csv("results.csv", stringsAsFactors = FALSE)
+data <- read.csv("results-2016-2018-round3.csv", stringsAsFactors = FALSE)
 range_inputs <- 30:37 #without reasons_cannot_find!!
 colnames(data[, 30:37])
 # should look like this:
@@ -150,20 +150,22 @@ df <- data.frame(name = c(author1, author2),
                  stringsAsFactors = FALSE)
 
 df <- df %>% filter(.$name != "Single Author", .$name != "{}", .$institution !="{}")
-write.csv(df, file = "author_inst_2016-2018-2.csv", row.names = FALSE)
+write.csv(df, file = "author_inst_2016-2018-4.csv", row.names = FALSE)
 
 
 # Manage CSV after author name and institution are ready =====
 data <- read.csv("chienn1.csv")
 data2 <- read.csv("chienn2.csv")
 authors <- rbind(subset(data[,-3], data$delete != "x"), subset(data2[, -3], data2$delete != "x"))
+
+data6 <- subset(data5[,-3], data5$delete != "x")
 head(authors)
 write.csv(authors, file = "authors_and_emails_task_mturk.csv", row.names = FALSE)
 
 
 
-# manage email collection
-emails <- read.csv("results.csv")
+# manage email collection =====
+emails <- read.csv("2016-2018-emails01.csv")
 # filter out wrong email address source 
 source <- grepl("http", emails$Answer.source)
 # filter out wrong email address format
@@ -175,7 +177,7 @@ emails$Approve <- ifelse(approve_index == TRUE, "x", "")
 emails$Reject <- ifelse(approve_index == FALSE, "x", "")
 
 # csv to upload to mturk
-write.csv(emails, file = "upload_to_mturk.csv", row.names = FALSE)
+write.csv(emails, file = "upload_to_mturk_emails.csv", row.names = FALSE)
 
 # Collect name, institu., email, source
 library(dplyr)
@@ -183,9 +185,25 @@ collected_emails <- emails %>%
   filter(.$Approve == "x") %>%
   select(Input.name, Input.institution, Answer.email, Answer.source)
 
-write.csv(rbind(original_email, collected_emails), file = "collected_emails.csv", row.names = FALSE)
+original_email <- read.csv("collected_emails.csv")
+write.csv(rbind(original_email, collected_emails), file = "collected_emails-v2.csv", row.names = FALSE)
 
 
+
+
+data5 <- rbind(data1, data2, data3, data4)
+write.csv(data5, file = "author_inst_2016-2018.csv")
+
+
+results3 %>%
+  count(.$AssignmentStatus == "Approved")
+
+table(results2$AssignmentStatus)
+table(results3$AssignmentStatus) - table(results2$AssignmentStatus)
+
+num_article_per_year %>% 
+  filter(.$year %in% c(2016:2018)) %>%
+  colSums()
 
 
 
