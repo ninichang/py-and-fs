@@ -165,7 +165,7 @@ write.csv(authors, file = "authors_and_emails_task_mturk.csv", row.names = FALSE
 
 
 # manage email collection =====
-emails <- read.csv("2016-2018-emails01.csv")
+emails <- read.csv("2016-2018-emails02.csv")
 # filter out wrong email address source 
 source <- grepl("http", emails$Answer.source)
 # filter out wrong email address format
@@ -185,11 +185,11 @@ collected_emails <- emails %>%
   filter(.$Approve == "x") %>%
   select(Input.name, Input.institution, Answer.email, Answer.source)
 
-original_email <- read.csv("collected_emails.csv")
-write.csv(rbind(original_email, collected_emails), file = "collected_emails-v2.csv", row.names = FALSE)
+original_email <- read.csv("collected_emails-v2.csv")
+write.csv(rbind(original_email, collected_emails), file = "collected_emails-v3.csv", row.names = FALSE)
 
 
-
+latest_emails <- read.csv("collected_emails-v3.csv")
 
 data5 <- rbind(data1, data2, data3, data4)
 write.csv(data5, file = "author_inst_2016-2018.csv")
